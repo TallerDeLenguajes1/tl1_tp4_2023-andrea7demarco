@@ -11,10 +11,11 @@ struct Tarea
 };
 typedef struct Tarea Tareas;
 
+void BuscarTarea(Tareas** realizadas,Tareas**pendientes, int contadorHecha,int contadorPendiente,int id);
 
 int main(){
     char buff[500];
-    int cant,i,sino;
+    int cant,i,sino,id;
 	int contadorHecha=0,contadorPendiente=0; //declaro e inicializo contadores 
      //semilla
     printf("Cuantas tareas debe cargar:\n");
@@ -24,14 +25,14 @@ int main(){
     tarea[i]=NULL; //arreglo incializado en NULL (2)
     }
     for(i=0;i<cant;i++){ //(3)Carga las tareas
-        tarea[i]=malloc(sizeof(struct Tarea)); 
+        tarea[i]=malloc(sizeof(struct Tarea*)); 
         tarea[i]->TareaID=i+1;
         printf("Ingresar la descripcion de la tarea:\n");
         fflush(stdin);
         gets(buff);
         tarea[i]->Descripcion=malloc(sizeof(char)*strlen(buff+1)); // reserva de memoria dinam para descr
         strcpy(tarea[i]->Descripcion,buff);
-        tarea[i]->Duracion=rand()%9*10;
+        tarea[i]->Duracion=rand()%100+10;
 	    }
 	    
 	//tareas realizadas y  pendientes (4)
@@ -54,12 +55,12 @@ int main(){
 			 //se mueve dicha tarea a este arreglo(tareas realizadas)
 			
 			realizadas[contadorHecha]=tarea[i];  
-			tarea[i]=NULL; //una vez movida la tarea ese casillero del vector apunta a NULL
+			 tarea[i]=NULL; //una vez movida la tarea ese casillero del vector apunta a NULL
 			contadorHecha++;
 			
 		} else {
 			pendientes[contadorPendiente]=tarea[i];
-			tarea[i]=NULL;
+			 tarea[i]=NULL;
 			contadorPendiente++;
 		}
 	}
@@ -78,6 +79,13 @@ int main(){
 	printf("[ID:%d - Descripcion:%s - Duracion:%d ]\n",pendientes[i]->TareaID,pendientes[i]->Descripcion,pendientes[i]->Duracion);
 		
 	}
+
+    // Buscar tarea
+    printf("Ingrese id a buscar: ");
+	scanf("%d",&id);
+	
+    BuscarTarea(realizadas,pendientes,contadorHecha,contadorPendiente, id);
+
 
     //poner al final - liberación memoria
     for(i=0;i<cant;i++){ //TAREAS
@@ -106,9 +114,21 @@ int main(){
 	}
 	
 	free(pendientes);
-    
+    return 0;
+}
 
- return 0;
+void BuscarTarea(Tareas** realizadas,Tareas**pendientes, int contadorHecha,int contadorPendiente,int id){
+	int i;
+    for(i=0;i<contadorHecha;i++){
+        if(realizadas[i]->TareaID == id){
+            printf("[ID:%d - Descripcion:%s - Duracion:%d ]\n",realizadas[i]->TareaID, realizadas[i]->Descripcion, realizadas[i]->Duracion);
+        }
+	}
+	for(i=0;i<contadorPendiente;i++){
+		if(pendientes[i]->TareaID ==id){
+			printf("[ID:%d - Descripcion:%s - Duracion:%d ]\n",pendientes[i]->TareaID, pendientes[i]->Descripcion, pendientes[i]->Duracion);
+		}
+	}
 }
 
 
