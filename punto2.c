@@ -1,5 +1,3 @@
-
-
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
@@ -123,4 +121,3 @@ void BuscarTarea(Tareas** realizadas,Tareas**pendientes, int cant,int id){
 		}
 	}
 }
-
