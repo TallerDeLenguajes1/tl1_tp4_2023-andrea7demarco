@@ -18,7 +18,7 @@ void BuscarTareaPorPalabra(Tareas** realizadas, Tareas** pendientes,int cant, ch
 int main(){
     char buff[500];
 	char clave[50];
-    int cant,i=0,j=0,rta,id;
+    int cant,i=0,j=0,rta,id,buscar;
  //declaro e inicializo contadores 
      //semilla
 	 srand(time(NULL));
@@ -83,13 +83,26 @@ printf("[ID:%d - Descripcion:%s - Duracion:%d ]\n",pendientes[i]->TareaID,pendie
 	
 		
 	}
-
-	printf("Ingrese la palabra clave a buscar:\n");
-	scanf("%s",&clave);
-	fflush(stdin);
+    //////menu/////
+	printf("(((((((((((((((((((((((Menu)))))))))))))))))))))\n");
+	printf("Desea buscar tarea por ID [1] por CLAVE [0]\n");
+	scanf("%d",&buscar);
+	if(buscar==1){
+	printf("Ingrese id a buscar:\n");
+	scanf("%d",&id);
     BuscarTareaPorId(realizadas,pendientes, cant,id);
 
+	} else {
+     printf("Ingrese palabra clave a buscar:\n");
+	 fflush(stdin);
+	 scanf("%s",&clave);
 	BuscarTareaPorPalabra(realizadas,pendientes,cant,clave);
+
+	}
+
+
+
+
 
     //poner al final - liberación memoria
   
