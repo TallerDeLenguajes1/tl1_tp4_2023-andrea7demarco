@@ -1,6 +1,4 @@
 
-
-
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
@@ -14,7 +12,8 @@ struct Tarea
 };
 typedef struct Tarea Tareas;
 
-void BuscarTarea(Tareas** realizadas, Tareas** pendientes,int cant, char *clave );
+void BuscarTareaPorId(Tareas** realizadas,Tareas**pendientes, int cant,int id);
+
 int main(){
     char buff[500];
 	char clave[50];
@@ -84,11 +83,11 @@ printf("[ID:%d - Descripcion:%s - Duracion:%d ]\n",pendientes[i]->TareaID,pendie
 		
 	}
 
-
-	printf("Ingrese la palabra clave a buscar:\n");
-	scanf("%s",&clave);
+    printf("Ingrese el id a buscar:\n");
+	scanf("%d",&id);
 	fflush(stdin);
-	BuscarTarea(realizadas,pendientes,cant,clave);
+    BuscarTareaPorId(realizadas,pendientes, cant,id);
+
 
     //poner al final - liberación memoria
   
@@ -106,29 +105,28 @@ free(realizadas);
     return 0;
 }
 
+void BuscarTareaPorId(Tareas** realizadas,Tareas**pendientes, int cant,int id){
+	int i;
+    for(i=0;i<cant;i++){
+		if(realizadas[i]!=NULL){
+			if(realizadas[i]->TareaID == id){
+            printf("[ID:%d - Descripcion:%s - Duracion:%d ]\n",realizadas[i]->TareaID, realizadas[i]->Descripcion, realizadas[i]->Duracion);
+        }
 
-void BuscarTarea(Tareas** realizadas, Tareas** pendientes,int cant, char *clave ){
-	int i,encontrada=0;
-	printf("Tareas buscadas por palabra clave:\n");
-	    for(i=0;i<cant;i++){
-			if(realizadas[i]!=NULL && encontrada==0){
-                if(strstr(realizadas[i]->Descripcion,clave)){
-					encontrada=1;
-                    printf("[ID:%d - Descripcion:%s - Duracion:%d ]\n",realizadas[i]->TareaID, realizadas[i]->Descripcion, realizadas[i]->Duracion);
-                }
-			}
-
-	}
-	for(i=0;i<cant;i++){
-		if(pendientes[i]!=NULL&&encontrada==0){
-	           if(strstr(pendientes[i]->Descripcion,clave)){
-				encontrada=1;
-		         	printf("[ID:%d - Descripcion:%s - Duracion:%d ]\n",pendientes[i]->TareaID, pendientes[i]->Descripcion, pendientes[i]->Duracion);
-		        }
 		}
 
 	}
+	for(i=0;i<cant;i++){
+		if(pendientes[i]!=NULL){
+			if(pendientes[i]->TareaID == id){
+            printf("[ID:%d - Descripcion:%s - Duracion:%d ]\n",pendientes[i]->TareaID, pendientes[i]->Descripcion, pendientes[i]->Duracion);
+			}
+			
+		}
+	}
 }
+
+
 
 
 
