@@ -12,10 +12,8 @@ struct Tarea
 typedef struct Tarea Tareas;
 
 void BuscarTarea(Tareas** realizadas,Tareas**pendientes, int cant,int id);
-void BuscarTareaClave(Tareas** realizadas, Tareas** pendientes,int cant, char *clave );
 int main(){
     char buff[500];
-	char clave[50];
     int cant,i=0,j=0,rta,id;
  //declaro e inicializo contadores 
      //semilla
@@ -86,10 +84,6 @@ printf("[ID:%d - Descripcion:%s - Duracion:%d ]\n",pendientes[i]->TareaID,pendie
 	scanf("%d",&id);
 	fflush(stdin);
     BuscarTarea(realizadas,pendientes, cant,id);
-	printf("Ingrese la palabra clave a buscar:\n");
-	scanf("%s",&clave);
-	fflush(stdin);
-	BuscarTareaClave(realizadas,pendientes,cant,clave);
 
     //poner al final - liberación memoria
   
@@ -125,29 +119,5 @@ void BuscarTarea(Tareas** realizadas,Tareas**pendientes, int cant,int id){
 			}
 			
 		}
-	}
-}
-
-
-void BuscarTareaClave(Tareas** realizadas, Tareas** pendientes,int cant, char *clave ){
-	int i,encontrada=0;
-	printf("Tareas buscadas por palabra clave:\n");
-	    for(i=0;i<cant;i++){
-			if(realizadas[i]!=NULL && encontrada==0){
-                if(strstr(realizadas[i]->Descripcion,clave)){
-					encontrada=1;
-                    printf("[ID:%d - Descripcion:%s - Duracion:%d ]\n",realizadas[i]->TareaID, realizadas[i]->Descripcion, realizadas[i]->Duracion);
-                }
-			}
-
-	}
-	for(i=0;i<cant;i++){
-		if(pendientes[i]!=NULL&&encontrada==0){
-	           if(strstr(pendientes[i]->Descripcion,clave)){
-				encontrada=1;
-		         	printf("[ID:%d - Descripcion:%s - Duracion:%d ]\n",pendientes[i]->TareaID, pendientes[i]->Descripcion, pendientes[i]->Duracion);
-		        }
-		}
-
 	}
 }
