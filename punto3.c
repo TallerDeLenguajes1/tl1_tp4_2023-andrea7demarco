@@ -24,6 +24,7 @@ void LiberarLista(Lista Tareas);
 void BuscarTareaPorId(Lista Tareas,int id);
 void LiberarMemoria(Lista Tareas);
 void EliminarTareas(Lista Tareas, int eliminar);
+void MostrarDatos(Lista Tareas);
 
 
 int main(){
@@ -35,14 +36,15 @@ int main(){
  	Realizadas=crearLista();
  	Pendientes=crearLista();
     TareasEnProceso=crearLista();
-    while(menu!=5){
+    while(menu!=6){
     printf("/////////MENU////////\n");
     printf("[0]Crear Tarea\n");
     printf("[1]Mostrar Tarea\n");
     printf("[2]Marcar tarea realizada\n");
     printf("[3]Buscar tarea por ID\n");
     printf("[4]Eliminar tareas por ID:\n");
-    printf("[5]Salir");
+    printf("[5]Mostrar Datos:\n");
+    printf("[6]Salir");
     fflush(stdin);
     scanf("%d",&menu);
 
@@ -77,7 +79,9 @@ int main(){
         EliminarTareas(Pendientes,eliminar);
         EliminarTareas(Realizadas,eliminar);
 
-    
+    case 5:
+       MostrarDatos(Pendientes);
+       MostrarDatos(Realizadas);
     default:
         break;
     }
@@ -204,6 +208,22 @@ void EliminarTareas(Lista Tareas, int id){
     }
     
 }
+
+void MostrarDatos(Lista Tareas){
+    int contDuracion=0, cant=0;
+   while(Tareas!=NULL){
+        contDuracion=contDuracion + Tareas->T.Duracion;
+        cant++;
+        Tareas=Tareas->siguiente;
+   }
+
+   printf("Cantidad de tareas : %d", cant);
+   printf("Tiempo total de la lista: %d",contDuracion);
+
+}
+
+
+
 
 
 
