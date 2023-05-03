@@ -22,22 +22,27 @@ Lista MoverTarea(Lista Pendientes,Lista Realizadas);
 void MostrarTareas(Lista Tareas);
 void LiberarLista(Lista Tareas);
 void BuscarTareaPorId(Lista Tareas,int id);
+void LiberarMemoria(Lista Tareas);
+void EliminarTareas(Lista Tareas, int eliminar);
 
 
 int main(){
 	int num=0,menu=0;
-    int id;
+    int id,eliminar;
  	Lista Realizadas;
  	Lista Pendientes;
+    Lista TareasEnProceso;
  	Realizadas=crearLista();
  	Pendientes=crearLista();
-    while(menu!=4){
-    printf("////:::://///MENU////::::////\n");
+    TareasEnProceso=crearLista();
+    while(menu!=5){
+    printf("/////////MENU////////\n");
     printf("[0]Crear Tarea\n");
     printf("[1]Mostrar Tarea\n");
     printf("[2]Marcar tarea realizada\n");
     printf("[3]Buscar tarea por ID\n");
-    printf("[4]Salir:\n");
+    printf("[4]Eliminar tareas por ID:\n");
+    printf("[5]Salir");
     fflush(stdin);
     scanf("%d",&menu);
 
@@ -64,6 +69,14 @@ int main(){
         scanf("%d",&id);
         BuscarTareaPorId(Realizadas,id);
         BuscarTareaPorId(Pendientes,id);
+
+    case 4:
+        printf("Eliminar tarea buscada por id:\n");
+        printf("Ingresar Id:\n");
+        scanf("%d",&eliminar);
+        EliminarTareas(Pendientes,eliminar);
+        EliminarTareas(Realizadas,eliminar);
+
     
     default:
         break;
@@ -103,7 +116,6 @@ Lista crearTarea(Lista Pendientes, int num){ //creación dinámica de un nodo
 	nuevo->T = T;
 	nuevo->siguiente=Pendientes;
 	Pendientes=nuevo;
-
     return Pendientes;
 }
 
@@ -132,7 +144,7 @@ Lista MoverTarea(Lista Pendientes,Lista Realizadas){
 		printf("[ID:%d]\n",Pendientes->T.TareaID);
 		Pendientes=Pendientes->siguiente;
 
-           Nodo* actual = Pendientes;
+    Nodo* actual = Pendientes;
     Nodo* anterior = NULL;
     while(actual!=NULL){
         if(actual->T.TareaID==id){ // encontramos la tarea
@@ -170,6 +182,27 @@ void BuscarTareaPorId(Lista Tareas, int id){
 
 	Tareas=Tareas->siguiente;
 	}
+}
+
+void EliminarTareas(Lista Tareas, int id){
+    Nodo* actual = Tareas;
+    Nodo* anterior = NULL;
+
+    while(actual!=NULL){
+        if(actual->T.TareaID==id){ // encontramos la tarea
+            if(anterior!=NULL){ // no es el primer elemento de la lista
+                anterior->siguiente = actual->siguiente;
+                printf("Tarea %d no encontrada en la lista.\n",id);
+            }else{ // es el primer elemento de la lista
+                Tareas= actual->siguiente;
+            }
+            printf("Tarea %d eliminada.\n",id);
+            return;
+        }
+        anterior = actual;
+        actual = actual->siguiente;
+    }
+    
 }
 
 
