@@ -18,33 +18,36 @@ typedef struct Nodo* Lista;
 
 Lista crearLista();
 Lista crearTarea(Lista Pendientes, int num);
-Lista MoverTarea(Lista Pendientes,Lista Realizadas);
+void MoverTarea(Lista *Pendientes,Lista *Realizadas,int id);
 void MostrarTareas(Lista Tareas);
 void LiberarLista(Lista Tareas);
 void BuscarTareaPorId(Lista Tareas,int id);
+void BuscarTareaPorPalabra(Lista Tareas,char *clave);
 void LiberarMemoria(Lista Tareas);
 void EliminarTareas(Lista Tareas, int eliminar);
 void MostrarDatos(Lista Tareas);
 
 
 int main(){
-	int num=0,menu=0;
+	int num=0,menu=0,destino,cont;
     int id,eliminar;
+    char clave[50];
  	Lista Realizadas;
  	Lista Pendientes;
-    Lista TareasEnProceso;
+    Lista Proceso;
  	Realizadas=crearLista();
  	Pendientes=crearLista();
-    TareasEnProceso=crearLista();
-    while(menu!=6){
+    Proceso=crearLista();
+    while(menu!=8){
     printf("/////////MENU////////\n");
     printf("[0]Crear Tarea\n");
     printf("[1]Mostrar Tarea\n");
     printf("[2]Marcar tarea realizada\n");
     printf("[3]Buscar tarea por ID\n");
-    printf("[4]Eliminar tareas por ID:\n");
-    printf("[5]Mostrar Datos:\n");
-    printf("[6]Salir");
+    printf("[4]Buscar traea por clave:\n");
+    printf("[5]Eliminar tarea por ID:\n");
+    printf("[6]Mostrar Datos:\n");
+    printf("[7]Mover tareas pend realiz proc\n");
     fflush(stdin);
     scanf("%d",&menu);
 
@@ -62,7 +65,9 @@ int main(){
         break;
     case 2:
         printf("marcar tareas realizadas");
-        Realizadas=MoverTarea(Pendientes,Realizadas);
+        printf("Ingrese el ID de la tarea realizada:\n");
+        scanf("%d",&id);
+        MoverTarea(&Pendientes,&Realizadas,id);
         break;
     
     case 3:
@@ -71,18 +76,76 @@ int main(){
         scanf("%d",&id);
         BuscarTareaPorId(Realizadas,id);
         BuscarTareaPorId(Pendientes,id);
-
     case 4:
+
+        printf("Buscar tareas por Clave:\n");
+        printf("Clave :\n");
+        scanf("%s",&clave);
+        BuscarTareaPorPalabra(Realizadas,clave);
+        BuscarTareaPorPalabra(Pendientes,clave);
+        
+
+    case 5:
         printf("Eliminar tarea buscada por id:\n");
         printf("Ingresar Id:\n");
         scanf("%d",&eliminar);
         EliminarTareas(Pendientes,eliminar);
         EliminarTareas(Realizadas,eliminar);
 
-    case 5:
+    case 6:
        MostrarDatos(Pendientes);
        MostrarDatos(Realizadas);
+       MostrarDatos(Proceso);
+
+    case 7:
+    while(cont!=0&&destino!=9){
+    printf("Realizadas:\n");
+    MostrarTareas(Realizadas);
+    printf("Pendientes:\n");
+    MostrarTareas(Pendientes);
+    printf("en Proceso:\n");
+    MostrarTareas(Proceso);
+    printf("Ingrese Id de la tarea con la que opera:\n");
+    scanf("%d",&id);
+    printf("Ingrese destino de la tarea :[1]Pendientes [2]Realizadas [3]Proceso\n");
+    printf("Si desea eliminar marque [0]\n");
+    printf("Si desea no hacer nada[9]\n");
+    scanf("%d",&destino);
+    if(destino==1){
+        MoverTarea(&Realizadas,&Pendientes,id);
+        MoverTarea(&Proceso,&Pendientes,id);
+    }
+    if(destino==2){
+        MoverTarea(&Pendientes,&Realizadas,id);
+        MoverTarea(&Proceso,&Realizadas,id);
+    }
+
+    if(destino==3){
+        MoverTarea(&Pendientes,&Proceso,id);
+        MoverTarea(&Realizadas,&Proceso,id);
+    }
+
+    if(destino==0){
+        EliminarTareas(Pendientes,id);
+        EliminarTareas(Realizadas,id);
+        EliminarTareas(Proceso,id);
+    }
+    printf("Desea continuar si[1] no[0]\n");
+    scanf("%d",&cont);
+
+    if(cont==0){
+        MostrarDatos(Realizadas);
+        MostrarDatos(Pendientes);
+        MostrarDatos(Proceso);
+    }
+    }
+
+    case 8:
+    printf("Salir:\n");
+ 
+    
     default:
+
         break;
     }
 
@@ -140,40 +203,33 @@ void LiberarLista(Lista Tareas){
     }
 }
 
-Lista MoverTarea(Lista Pendientes,Lista Realizadas){
-    int id;
-    	while(Pendientes!=NULL){
-        printf("Ingrese el ID de la tarea realizada:\n");
-        scanf("%d",&id);
-		printf("[ID:%d]\n",Pendientes->T.TareaID);
-		Pendientes=Pendientes->siguiente;
+void MoverTarea(Lista *Pendientes,Lista *Realizadas,int id){
+    struct Nodo *actual, *anterior;
+    actual = *Pendientes;
+    anterior = NULL;
 
-    Nodo* actual = Pendientes;
-    Nodo* anterior = NULL;
-    while(actual!=NULL){
-        if(actual->T.TareaID==id){ // encontramos la tarea
-            if(anterior!=NULL){ // no es el primer elemento de la lista
-                anterior->siguiente = actual->siguiente;
-            }else{ // es el primer elemento de la lista
-                Pendientes = actual->siguiente;
-            }
-            // agregar tarea a lista de realizadas
-            Nodo* nuevo = (Nodo*)malloc(sizeof(Nodo));
-            nuevo->T = actual->T;
-            nuevo->siguiente = Realizadas;
-            Realizadas = nuevo;
-            printf("Tarea %d realizada y movida a la lista de realizadas.\n",id);
-
-            
-           return Realizadas;
-        }
+    // Buscamos la tarea por su ID
+    while(actual != NULL && actual->T.TareaID != id){
         anterior = actual;
         actual = actual->siguiente;
     }
-    printf("Tarea %d no encontrada en la lista de pendientes.\n",id);
 
-	}
- 
+    if(actual != NULL){
+        // Si encontramos la tarea, la eliminamos de TareasPendientes
+        if(anterior == NULL){
+            *Pendientes = actual->siguiente;
+        }else{
+            anterior->siguiente = actual->siguiente;
+        }
+
+        // Agregamos la tarea a TareasRealizadas
+        actual->siguiente = *Realizadas;
+        *Realizadas = actual;
+
+        printf("Tarea %d marcada como realizada.\n", id);
+    }else{
+        printf("No se encontró la tarea con ID %d.\n", id);
+    }
 }
 
 void BuscarTareaPorId(Lista Tareas, int id){
@@ -186,6 +242,15 @@ void BuscarTareaPorId(Lista Tareas, int id){
 
 	Tareas=Tareas->siguiente;
 	}
+}
+
+void BuscarTareaPorPalabra(Lista Tareas, char *clave){
+    while(Tareas!=NULL){
+        if(strstr(Tareas->T.Descripcion,clave)){
+            printf("[ID:%d - Descripcion:%s - Duracion:%d]\n",Tareas->T.TareaID,Tareas->T.Descripcion,Tareas->T.Duracion);
+           
+        }
+    }
 }
 
 void EliminarTareas(Lista Tareas, int id){
